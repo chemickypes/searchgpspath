@@ -1,0 +1,69 @@
+public HalfEdge addVertex(VLinkedNode n1 , VLinkedNode n2 , VLinkedNode n3, double x, double y){
+VLeafNode leaf1 = (VLeafNode) n1;
+VLeafNode leaf2 = (VLeafNode) n2;
+VLeafNode leaf3 = (VLeafNode) n3;
+
+VInternalNode left = leaf1.getFirstCommonParent(leaf2);
+VInternalNode right = leaf2.getFirstCommonParent(leaf3);
+// VInternalNode down = leaf1.getFirstCommonParent(leaf3);
+
+//this edges ends to a same vertex
+HalfEdge heLeft = left.get_halfedge();
+HalfEdge heRight = right.get_halfedge();
+ArrayList<HalfEdge> newCouple = DCEL.getNewTwinHalfEdge();
+
+//////////// DEBUG //////////////////////
+System.out.println("node left:"+left.toString() +" edge left: " +heLeft.getpID());
+System.out.println("node right:"+right.toString() +" edge right: " +heRight.getpID());
+/////////// END DEBUG ////////////////////////////////
+
+//new Vertex
+DCELVertex newVertex = checkExistingVertex(x, y);
+if(newVertex == null){
+newVertex = new DCELVertex(x, y);
+this.vertex.add(newVertex);
+}
+//set newVertex half edge
+newVertex.getEdges().add(newCouple.get(0));
+//set origin of new edge
+newCouple.get(0).setOrigin(newVertex);
+
+//set origin other half edge
+if(heLeft.getOrigin()==null){
+heLeft.setOrigin(newVertex);
+newVertex.getEdges().add(heLeft);
+}else{
+heLeft.getTwin().setOrigin(newVertex);
+newVertex.getEdges().add(heLeft.getTwin());
+}
+
+if(heRight.getOrigin()==null){
+heRight.setOrigin(newVertex);
+newVertex.getEdges().add(heRight);
+}else{
+heRight.getTwin().setOrigin(newVertex);
+newVertex.getEdges().add(heRight.getTwin());
+}
+
+this.halfEdges.addAll(newCouple);
+
+return newCouple.get(0);
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+for(Iterator<HalfEdge> ith = v.getEdges().iterator(); ith.hasNext();){
+					HalfEdge he = ith.next();
+					if(he.getTwin().getOrigin()==null){
+						ith.remove();
+					}

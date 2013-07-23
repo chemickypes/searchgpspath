@@ -1,0 +1,131 @@
+public static void main(String args[]){
+		VPoint a = new VPoint(1.0, 1.0);
+		VPoint b = new VPoint(2.0, 0.0);
+		VPoint c = new VPoint(2.0, 2.0);
+		VPoint d = new VPoint(3.0, 1.0);
+		VPoint e = new VPoint(5.0,2.0);
+
+		ArrayList<VPoint> points = new ArrayList<>();
+		points.add(a);
+		points.add(b);
+		points.add(c);
+		points.add(d);
+		points.add(e);
+		
+		
+		DCEL dcel=Voronoi.generateVoronoi(points);
+		
+		System.out.println("# Vertex is: "+dcel.getVertex().size());
+		ArrayList<DCELVertex> dd = dcel.getVertex();
+		for(DCELVertex v:dd){
+			System.out.println(v.toString()+" halfedge :"+ v.heToString());
+		}
+		System.out.println("# half edges is: "+dcel.getHalfEdges().size());
+		ArrayList<HalfEdge> eds = dcel.getHalfEdges();
+		for(HalfEdge he :eds){
+			try{
+				System.out.println("Edge # "+he.getpID()+" Origin Vertex: "+ he.getOrigin().toString()+" Twin Edge # "+he.getTwin().getpID());
+				System.out.println("          next HE: "+he.getNext().getpID()/*+" Prev HE: "+he.getPrevious().getpID()*/);
+			}catch(NullPointerException ex){
+				System.out.println("Edge # "+he.getpID()+" Twin Edge # "+he.getTwin().getpID()+" no prev");
+			}
+		}
+		ArrayList<Face> fs = dcel.getFaces();
+		System.out.println("#face is: "+fs.size());
+		for(Face f:fs){
+			System.out.println(f.toString());
+		}
+			
+		System.out.println("fine");
+	}
+	
+	
+	
+	
+	ufkdfkh
+	
+	
+	public static void main(String[] args) throws ClassNotFoundException
+	  {
+		ArrayList<VPoint> points = new ArrayList<>();
+	    // load the sqlite-JDBC driver using the current class loader
+	    Class.forName("org.sqlite.JDBC");
+
+	    Connection connection = null;
+	    try
+	    {
+	      // create a database connection
+	      connection = DriverManager.getConnection("jdbc:sqlite:lazio.sqlite");
+	      Statement statement = connection.createStatement();
+	      statement.setQueryTimeout(30);  // set timeout to 30 sec.
+
+	      ResultSet rs = statement.executeQuery("select * from coordinate where (x<= 14.0813784 AND x>=14.0792318) AND (y<=41.4888086 AND y>=41.4837944)");
+	      while(rs.next())
+	      {
+	    	  Double x = Double.parseDouble(rs.getObject("x").toString());
+	    	  Double y = Double.parseDouble(rs.getObject("y").toString());
+	    	  String result = rs.getInt("node")+"|"+ x+"|"+ y;
+	       
+	    	  System.out.println(result);
+	    	  points.add(new VPoint(x, y));
+	    	  
+	    	  DCEL dcel=Voronoi.generateVoronoi(points);
+	    	  
+	    	  System.out.println("# Vertex is: "+dcel.getVertex().size());
+	  		ArrayList<DCELVertex> dd = dcel.getVertex();
+	  		for(DCELVertex v:dd){
+	  			System.out.println(v.toString()+" halfedge :"+ v.heToString());
+	  		}
+	  		System.out.println("# half edges is: "+dcel.getHalfEdges().size());
+	  		ArrayList<HalfEdge> eds = dcel.getHalfEdges();
+	  		for(HalfEdge he :eds){
+	  			try{
+	  				System.out.println("Edge # "+he.getpID()+" Origin Vertex: "+ he.getOrigin().toString()+" Twin Edge # "+he.getTwin().getpID());
+	  				System.out.println("          next HE: "+he.getNext().getpID()/*+" Prev HE: "+he.getPrevious().getpID()*/);
+	  			}catch(NullPointerException ex){
+	  				System.out.println("Edge # "+he.getpID()+" Twin Edge # "+he.getTwin().getpID()+" no prev");
+	  			}
+	  		}
+	  		ArrayList<Face> fs = dcel.getFaces();
+	  		System.out.println("#face is: "+fs.size());
+	  		for(Face f:fs){
+	  			System.out.println(f.toString());
+	  		}
+	  			
+	  		System.out.println("fine");
+	    	  
+	      }
+	    }
+	    catch(SQLException e)
+	    {
+	      // if the error message is "out of memory", 
+	      // it probably means no database file is found
+	      System.err.println(e.getMessage());
+	    }
+	    finally
+	    {
+	      try
+	      {
+	        if(connection != null)
+	          connection.close();
+	      }
+	      catch(SQLException e)
+	      {
+	        // connection close failed.
+	        System.err.println(e);
+	      }
+	    }
+	  }
+	  
+	  
+	  
+	  VPoint a = new VPoint(1.23, 1.4);
+		VPoint b = new VPoint(2.56, 0.1);
+		VPoint c = new VPoint(2.34, 2.567);
+		VPoint d = new VPoint(3.0, 1.12);
+		VPoint e = new VPoint(5.098,2.33);
+		
+		
+		VPoint a = new VPoint(1, 1);
+		VPoint b = new VPoint(2, 1);
+		VPoint c = new VPoint(3, 4);

@@ -1,0 +1,89 @@
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+
+import java.util.List;
+
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.NamedNodeMap;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.xml.sax.SAXException;
+
+import br.zuq.osm.parser.util.LatLongUtil;
+
+import com.lorenzo.pointlocations.Point;
+
+
+public class GPXParser {
+	private static final SimpleDateFormat gpxDate = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
+	
+	public static List<Point> getPoints(String gpxFile){
+		File f = new File(gpxFile);
+		return getPoints(f);
+	}
+
+	public static List<Point> getPoints(File gpxFile)
+	{
+	    List<Point> points = null;
+	    try
+	    {
+	        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+	        DocumentBuilder builder = factory.newDocumentBuilder();
+
+	        FileInputStream fis = new FileInputStream(gpxFile);
+	        Document dom = builder.parse(fis);
+	        Element root = dom.getDocumentElement();
+	        NodeList items = root.getElementsByTagName("trkpt");
+
+	        points = new ArrayList<Point>();
+
+	        for(int j = 0; j < items.getLength(); j++)
+	        {
+	            Node item = items.item(j);
+	            NamedNodeMap attrs = item.getAttributes();
+//	            NodeList props = item.getChildNodes();
+
+	            double lat = Double.parseDouble(attrs.getNamedItem("lat").getTextContent());
+	            double lon = Double.parseDouble(attrs.getNamedItem("lon").getTextContent());
+	            double[] xyz = LatLongUtil.flatCoordinates(lat, lon);
+	            Point pt = new Point(xyz[0],xyz[1],"point:"+j);
+	            points.add(pt);
+	            
+	        }
+
+	        fis.close();
+	    }
+
+	    catch(FileNotFoundException e)
+	    {
+	        e.printStackTrace();
+	    } catch (IOException e) {
+	        e.printStackTrace();
+	    }
+
+	    catch(ParserConfigurationException ex)
+	    {
+
+	    }
+
+	    catch (SAXException ex) {
+	    }
+
+	    return points;
+	}
+
+	public static SimpleDateFormat getDateFormatter()
+	  {
+	    return (SimpleDateFormat)gpxDate.clone();
+	  }
+}

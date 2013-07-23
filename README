@@ -1,0 +1,15 @@
+SearchGPSPath is developed by Angelo Moroni and Lorenzo Spignoli.
+It's a university Work.
+This version of code is by Angelo Moroni
+
+ License: GPLv3
+
+------------------------------------------------------
+To use it:
+java -jar searchgpspath.jar [map] [track] [distance or null]
+
+required map is a osm file
+required track is a gpx file
+distance must be an integer
+
+The software will write a new file into track directory
